@@ -3,8 +3,9 @@ import React from 'react'
 function index() {
   return (
     <div>
-      lllll
-    </div>
+
+<button>click
+  </button>    </div>
   )
 }
 
