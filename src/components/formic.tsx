@@ -14,7 +14,8 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Badge from '@material-ui/core/Badge';
 import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
+import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,6 +46,17 @@ const useStyles = makeStyles((theme) => ({
     padding: '0px 20px',
   },
 }));
+
+const validationSchema = yup.object({
+  firstName: yup
+    .string('Enter your first name')
+    .min(4, 'minimum 4 letters')
+    .required('First name is required'),
+  lastName: yup
+    .string('Enter your last name')
+    .min(2, 'minimum 2 letters')
+    .required('Last name is required'),
+});
 
 function index() {
   // const [firstName, setFirstName] = useState('Irfan');
@@ -84,6 +96,32 @@ function index() {
       });
     }
   };
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: 'Irfan',
+      lastName: 'Ahmed',
+      headLine: 'FullStack Developer',
+      country: ' Pakistan',
+      city: 'karachi',
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      setOpen(false);
+      if (userData) {
+        console.log(City.current.value);
+
+        return setUserData({
+          ...userData,
+          firstName: firstN.current.value,
+          lastName: lastN.current.value,
+          headLine: HeadLine.current.value,
+          country: Country.current.value,
+          city: City.current.value,
+        });
+      }
+    },
+  });
 
   return (
     <Grid container direction="column" className={classes.root}>
@@ -135,6 +173,30 @@ function index() {
                 />{' '}
               </Badge>
             </DialogContentText>
+            <form onSubmit={formik.handleSubmit}>
+              <TextField
+                id="firstName"
+                name="firstName"
+                label="First Name"
+                inputRef={firstN}
+                value={formik.values.firstName}
+                onChange={formik.handleChange}
+                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                helperText={formik.touched.firstName && formik.errors.firstName}
+              />
+              <TextField
+                id="lastName"
+                name="lastName"
+                label="Last Name"
+                value={formik.values.lastName}
+                onChange={formik.handleChange}
+                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                helperText={formik.touched.lastName && formik.errors.lastName}
+              />
+              <Button color="primary" variant="contained" fullWidth type="submit">
+                Submit
+              </Button>
+            </form>
 
             <TextField
               required
